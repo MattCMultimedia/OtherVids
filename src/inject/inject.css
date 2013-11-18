@@ -1,5 +1,5 @@
 .othervids-container {
-    color: black;
+    color: #444;
     width: 1000px;
 
 }
@@ -10,11 +10,14 @@
 
 .othervids-header {
     cursor: pointer;
+    padding: 7px;
+    width: 100px;
+    font-size: large;
 }
 .othervids-header:hover {
-    background-color: gray;
+    background-color: #444;
+    color: #fff;
 }
-
 
 
 .masthead-ad-control.open a: hover img,.masthead-ad-control.open a: active img

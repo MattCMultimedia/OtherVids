@@ -3,23 +3,25 @@ chrome.extension.sendMessage({}, function(response) {
 	if (document.readyState === "complete") {
 		clearInterval(readyStateCheckInterval);
 
-        var containerTemplate = '<div class="othervids-container">'+
-            '<div class="othervids-header">'+
-            'OtherVids'+
-            '<div id="othervids-indicator" class="othervids-can-expand"></div>'+
-            '</div>'+
-            '<div class="othervids-content">'+
-            '</div>'+
-            '</div>';
+        var containerTemplate =
+                '<div class="othervids-container">'+
+                    '<div class="othervids-header">'+
+                        'OtherVids'+
+                    '</div>'+
+                    '<div class="othervids-content">'+
+                    '</div>'+
+                '</div>';
 
         var slider = _.template(
                 '<div class="feed-item-dismissable post-item ">'+
                     // '<div class="feed-author-bubble-container">'+
-                    //      '<a href="/user/RoosterTeeth" class="feed-author-bubble yt-uix-sessionlink g-hovercard"> <span class="feed-item-author "> <span class="video-thumb  yt-thumb yt-thumb-28"> <span class="yt-thumb-square"> <span class="yt-thumb-clip"><img src="https://lh6.googleusercontent.com/-hddEYyXVeZM/AAAAAAAAAAI/AAAAAAAAAAA/ghwEL1-FHdE/s28-c-k-no/photo.jpg" alt="Rooster Teeth" width="28" /><span class="vertical-align"></span></span></span></span></span></a>'+
+                    //      '<a href="<%= feed.link[1].href %>" class="feed-author-bubble yt-uix-sessionlink g-hovercard"> <span class="feed-item-author "> <span class="video-thumb  yt-thumb yt-thumb-28"> <span class="yt-thumb-square"> <span class="yt-thumb-clip">'+
+                    //      '<img src="https://lh6.googleusercontent.com/-hddEYyXVeZM/AAAAAAAAAAI/AAAAAAAAAAA/ghwEL1-FHdE/s28-c-k-no/photo.jpg" alt="<%= feed.author[0].name.$t %>" width="28" />'+
+                    //      '<span class="vertical-align"></span></span></span></span></span></a>'+
                     // '</div>'+
                     '<div class="feed-item-main">'+
                         '<div class="feed-item-header  vve-check">'+
-                             '<span class="feed-item-actions-line">Recent videos from <span class="feed-item-owner"><a href="<%= feed.link[1].href %>" class="g-hovercard yt-uix-sessionlink yt-user-name spf-nolink"><%= feed.author[0].name %></a> <span class="yt-user-name-icon-verified"></span></span></span>'+
+                             '<span class="feed-item-actions-line">Recent videos from <span class="feed-item-owner"><a href="<%= feed.link[1].href %>" class="g-hovercard yt-uix-sessionlink yt-user-name spf-nolink"><%= feed.author[0].name.$t %></a></span></span>'+
                         '</div>'+
                         '<div class="feed-item-main-content">'+
                             '<div class="shelf-wrapper clearfix">'+
@@ -49,17 +51,17 @@ chrome.extension.sendMessage({}, function(response) {
                                          '<a href="<%= link[0].href %>" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink yt-fluid-thumb-link contains-addto">'+
                                             '<span class="video-thumb  yt-thumb yt-thumb-175 yt-thumb-fluid"> <span class="yt-thumb-default">'+
                                             '<span class="yt-thumb-clip">'+
-                                            '<img src="<%= _.findWhere(media$group.media$thumbnail, {width:120}).url %>" alt="Thumbnail" width="175" />'+
+                                            '<img src="<%= media$group.media$thumbnail[0].url %>" alt="Thumbnail" width="175" />'+
                                             '<span class="vertical-align"></span></span></span></span></a>'+
                                     '</div>'+
                                     '<div class="yt-lockup-content">'+
                                         '<h3 class="yt-lockup-title">'+
-                                             '<a class="yt-uix-sessionlink" title="<%= title.t %>" href="/watch?v=rUSVNRE8MCo"><span class="yt-ui-ellipsis-wrapper"><%= title.t %></span></a>'+
+                                             '<a class="yt-uix-sessionlink" title="<%= title.t %>" href="<%= link[0].href %>"><span class="yt-ui-ellipsis-wrapper"><%= title.t %></span></a>'+
                                         '</h3>'+
                                         '<div class="yt-lockup-meta">'+
                                             '<ul class="yt-lockup-meta-info">'+
                                                 '<li>'+
-                                                    'by <a href="/user/RoosterTeeth?feature=g-high-crv" class="g-hovercard yt-uix-sessionlink yt-user-name "><%= author[0].name %></a> <span class="yt-user-name-icon-verified"></span>'+
+                                                    'by <a href="<%= channelHref %>" class="g-hovercard yt-uix-sessionlink yt-user-name "><%= author[0].name.$t %></a>'+
                                                 '</li>'+
                                                 '<li>'+
                                                     '<%= viewString %>'+
@@ -78,6 +80,7 @@ chrome.extension.sendMessage({}, function(response) {
     var totalPages;
     var currentPage = 0;
     var pageOffset = 175*5.22;
+
 
     // http://gdata.youtube.com/feeds/api/users/UCzH3iADRIq1IJlIXjfNgTpA/uploads?orderby=published
         $.ajax({
@@ -102,8 +105,9 @@ chrome.extension.sendMessage({}, function(response) {
                 vidCount = data.feed.entry.length;
 
                 _.each(data.feed.entry, function(e) {
+                    e.channelHref = data.feed.link[1].href;
                     e.title.t = e.title.$t.slice(0, 60) + "...";
-                    e.viewString = e.yt$statistics !== undefined && e.yt$statistics.viewCount !== undefined ? e.yt$statistics.viewCount + " views" : "";
+                    e.viewString = e.yt$statistics !== undefined && e.yt$statistics.viewCount !== undefined ? numberWithCommas(e.yt$statistics.viewCount) + " views" : "";
                     $("#othervids-list").append(itemTemplate(e));
                 });
 
@@ -113,14 +117,14 @@ chrome.extension.sendMessage({}, function(response) {
 
                 $(".othervids-header").on("click", function() {
                     // expand the othervids-content div
-                    var contentDiv = $(".othervids-content");
+                    var contentDiv = $(".othervids-content").first();
                     if (contentDiv.hasClass("expanded")) {
                         // collapse
                         contentDiv.removeClass("expanded");
-                        contentDiv.animate({height: "0"}, 400);
+                        contentDiv.animate({height: "0", opacity: "0"}, 400);
                     } else {
                         contentDiv.addClass("expanded");
-                        contentDiv.animate({height: "210px"}, 400);
+                        contentDiv.animate({height: "210px", opacity: "1"}, 400);
                     }
                 });
 
@@ -167,4 +171,9 @@ chrome.extension.sendMessage({}, function(response) {
         });
 	}
 	}, 10);
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 });

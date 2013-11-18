@@ -13,19 +13,14 @@ chrome.extension.sendMessage({}, function(response) {
                 '</div>';
 
         var slider = _.template(
-                '<div class="feed-item-dismissable post-item ">'+
-                    // '<div class="feed-author-bubble-container">'+
-                    //      '<a href="<%= feed.link[1].href %>" class="feed-author-bubble yt-uix-sessionlink g-hovercard"> <span class="feed-item-author "> <span class="video-thumb  yt-thumb yt-thumb-28"> <span class="yt-thumb-square"> <span class="yt-thumb-clip">'+
-                    //      '<img src="https://lh6.googleusercontent.com/-hddEYyXVeZM/AAAAAAAAAAI/AAAAAAAAAAA/ghwEL1-FHdE/s28-c-k-no/photo.jpg" alt="<%= feed.author[0].name.$t %>" width="28" />'+
-                    //      '<span class="vertical-align"></span></span></span></span></span></a>'+
-                    // '</div>'+
+                '<div class="feed-item-dismissable post-item">'+
                     '<div class="feed-item-main">'+
-                        '<div class="feed-item-header  vve-check">'+
-                             '<span class="feed-item-actions-line">Recent videos from <span class="feed-item-owner"><a href="<%= feed.link[1].href %>" class="g-hovercard yt-uix-sessionlink yt-user-name spf-nolink"><%= feed.author[0].name.$t %></a></span></span>'+
+                        '<div class="feed-item-header">'+
+                             '<span class="feed-item-actions-line">Recent videos from <span class="feed-item-owner"><a href="<%= feed.link[1].href %>" class="yt-user-name"><%= feed.author[0].name.$t %></a></span></span>'+
                         '</div>'+
                         '<div class="feed-item-main-content">'+
                             '<div class="shelf-wrapper clearfix">'+
-                                '<div class="compact-shelf shelf-item yt-uix-shelfslider yt-uix-shelfslider-at-head vve-check feeds-mode yt-uix-tdl">'+
+                                '<div class="compact-shelf shelf-item yt-uix-shelfslider feeds-mode">'+
                                     '<div class="yt-uix-shelfslider-body context-data-container">'+
                                         '<ul id="othervids-list" class="yt-uix-shelfslider-list">'+
                                         '</ul>'+
@@ -46,7 +41,7 @@ chrome.extension.sendMessage({}, function(response) {
 
         var itemTemplate = _.template(
                             '<li class="channels-content-item yt-shelf-grid-item yt-uix-shelfslider-item ">'+
-                                '<div class="yt-lockup clearfix  yt-lockup-video yt-lockup-grid vve-check context-data-item">'+
+                                '<div class="yt-lockup clearfix  yt-lockup-video yt-lockup-grid context-data-item">'+
                                     '<div class="yt-lockup-thumbnail">'+
                                          '<a href="<%= link[0].href %>" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink yt-fluid-thumb-link contains-addto">'+
                                             '<span class="video-thumb  yt-thumb yt-thumb-175 yt-thumb-fluid"> <span class="yt-thumb-default">'+
@@ -74,7 +69,7 @@ chrome.extension.sendMessage({}, function(response) {
 
 
     // LOAD LATEST VIDEOS HERE
-    var channelID = $(".yt-user-name").first().data("ytid");
+    var channelID = $("#watch7-content .yt-user-name").first().data("ytid");
     var vidCount;
     var totalWidth;
     var totalPages;
@@ -135,6 +130,7 @@ chrome.extension.sendMessage({}, function(response) {
                         $("#othervids-list").animate({marginLeft: "0"});
                         currentPage = 0;
                         $("#othervids-prev").css("visibility", "hidden");
+                        $("#othervids-prev").css("opacity", "0");
                     } else {
                         currentPage += 1;
                         $("#othervids-list").animate({marginLeft: "-" + (currentPage*pageOffset) + "px"});

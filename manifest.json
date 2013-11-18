@@ -2,8 +2,8 @@
   "name": "OtherVids",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "This extension was created with the awesome extensionizr.io",
-  "homepage_url": "http://extensionizr.com",
+  "description": "Reenables the 'Other videos from this channel' feature from YouTube past.",
+  "homepage_url": "http://matt.cond.in/OtherVids",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

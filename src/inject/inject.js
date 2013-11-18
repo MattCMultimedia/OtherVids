@@ -103,7 +103,7 @@ chrome.extension.sendMessage({}, function(response) {
 
                 _.each(data.feed.entry, function(e) {
                     e.title.t = e.title.$t.slice(0, 60) + "...";
-                    e.viewString = e.yt$statistics !== undefined && e.yt$statistics.viewCount !== undefined ? e.yt$statistics.viewCount + "views" : "";
+                    e.viewString = e.yt$statistics !== undefined && e.yt$statistics.viewCount !== undefined ? e.yt$statistics.viewCount + " views" : "";
                     $("#othervids-list").append(itemTemplate(e));
                 });
 

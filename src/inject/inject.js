@@ -62,7 +62,7 @@ chrome.extension.sendMessage({}, function(response) {
                                                     'by <a href="/user/RoosterTeeth?feature=g-high-crv" class="g-hovercard yt-uix-sessionlink yt-user-name "><%= author[0].name %></a> <span class="yt-user-name-icon-verified"></span>'+
                                                 '</li>'+
                                                 '<li>'+
-                                                    '<%= yt$statistics.viewCount %> views'+
+                                                    '<%= viewString %>'+
                                                 '</li>'+
                                             '</ul>'+
                                         '</div>'+
@@ -103,6 +103,7 @@ chrome.extension.sendMessage({}, function(response) {
 
                 _.each(data.feed.entry, function(e) {
                     e.title.t = e.title.$t.slice(0, 60) + "...";
+                    e.viewString = e.yt$statistics !== undefined && e.yt$statistics.viewCount !== undefined ? e.yt$statistics.viewCount + "views" : "";
                     $("#othervids-list").append(itemTemplate(e));
                 });
 

@@ -46,7 +46,7 @@ chrome.extension.sendMessage({}, function(response) {
                             '<li class="channels-content-item yt-shelf-grid-item yt-uix-shelfslider-item ">'+
                                 '<div class="yt-lockup clearfix  yt-lockup-video yt-lockup-grid vve-check context-data-item">'+
                                     '<div class="yt-lockup-thumbnail">'+
-                                         '<a href="/watch?v=rUSVNRE8MCo" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink yt-fluid-thumb-link contains-addto ">'+
+                                         '<a href="<%= link[0].href %>" class="ux-thumb-wrap yt-uix-sessionlink yt-uix-contextlink yt-fluid-thumb-link contains-addto ">'+
                                             '<span class="video-thumb  yt-thumb yt-thumb-175 yt-thumb-fluid"> <span class="yt-thumb-default">'+
                                             '<span class="yt-thumb-clip">'+
                                             '<img src="//i1.ytimg.com/vi/rUSVNRE8MCo/mqdefault.jpg" alt="Thumbnail" width="175" />'+
@@ -78,101 +78,97 @@ chrome.extension.sendMessage({}, function(response) {
 
 
     // LOAD LATEST VIDEOS HERE
+    var channelID = $(".yt-user-name").first().data("ytid");
+    var vidCount;
+    var totalWidth;
+    var totalPages;
+    var currentPage = 0;
+    var pageOffset = 175*5.22;
 
+    // http://gdata.youtube.com/feeds/api/users/UCzH3iADRIq1IJlIXjfNgTpA/uploads?orderby=published
         $.ajax({
             method: "GET",
             dataType: "JSON",
             data: {
-
+                orderby: "published",
+                alt: "json",
+                results: 30
             },
-            url: "https://www.googleapis.com/youtube/v3/search",
+            url: "http://gdata.youtube.com/feeds/api/users/" + channelID + "/uploads",
+            headers: {
+                "X-GData-Key": "key=AI39si76t2w4itJ6dwa0imgrqqrayvbggwu-iZ7CnMgSStq4Rc_Z-_jOssaDK62EngXeb8o1Vm9wNEIRaF5FJxOblUA4XpSTqg"
+            },
             success: function(data) {
+                vidCount = 23;
+                totalWidth = vidCount * 175;
+                totalPages = Math.floor(vidCount/5);
+                console.log(data);
+                $(containerTemplate).insertBefore("#playlist");
+                $(".othervids-content").html(slider({}));
+                vidCount = data.feed.entry.length;
+
+                _.each(data.feed.entry, function(e) {
+                    $("#othervids-list").append(itemTemplate(e));
+                });
+
+
+
+
+
+                $(".othervids-header").on("click", function() {
+                    // expand the othervids-content div
+                    var contentDiv = $(".othervids-content");
+                    if (contentDiv.hasClass("expanded")) {
+                        // collapse
+                        contentDiv.removeClass("expanded");
+                        contentDiv.animate({height: "0"}, 400);
+                    } else {
+                        contentDiv.addClass("expanded");
+                        contentDiv.animate({height: "210px"}, 400);
+                    }
+                });
+
+                $(".yt-uix-shelfslider-next").on('click', function(e) {
+                    e.preventDefault();
+                    // if we're at the last page, wrap around to the beginning
+                    if (currentPage == totalPages) {
+                        $("#othervids-list").animate({marginLeft: "0"});
+                        currentPage = 0;
+                        $("#othervids-prev").css("visibility", "hidden");
+                    } else {
+                        currentPage += 1;
+                        $("#othervids-list").animate({marginLeft: "-" + (currentPage*pageOffset) + "px"});
+                        if (currentPage !== 0) {
+                            // hide button
+                            $("#othervids-prev").css("visibility", "visible");
+                            $("#othervids-prev").css("opacity", "1");
+                        }
+                    }
+
+                });
+
+                $(".yt-uix-shelfslider-prev").on('click', function(e) {
+                    e.preventDefault();
+                    if (currentPage === 0) {
+                        // beginning page, this button shouldn't have even been clicked cause it should be hidden, but whatever
+                    } else {
+                        currentPage -= 1;
+                        $("#othervids-list").animate({marginLeft: "-" + (currentPage*pageOffset) + "px"});
+                        if (currentPage === 0) {
+                            // hide button
+                            $("#othervids-prev").css("visibility", "hidden");
+                        }
+                    }
+                });
+
+
+
+
+
+
 
             }
         });
-
-
-        var vidCount = 23;
-        var totalWidth = vidCount * 175;
-        var totalPages = Math.floor(vidCount/5);
-        var currentPage = 0;
-        var pageOffset = 175*5.22;
-
-
-
-        $(containerTemplate).insertBefore("#playlist");
-        $(".othervids-content").html(slider({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        $("#othervids-list").append(itemTemplate({}));
-        // 23 * 175
-
-        $(".othervids-header").on("click", function() {
-            // expand the othervids-content div
-            var contentDiv = $(".othervids-content");
-            if (contentDiv.hasClass("expanded")) {
-                // collapse
-                contentDiv.removeClass("expanded");
-                contentDiv.animate({height: "0"}, 400);
-            } else {
-                contentDiv.addClass("expanded");
-                contentDiv.animate({height: "210px"}, 400);
-            }
-        });
-
-        $(".yt-uix-shelfslider-next").on('click', function(e) {
-            e.preventDefault();
-            // if we're at the last page, wrap around to the beginning
-            if (currentPage == totalPages) {
-                $("#othervids-list").animate({marginLeft: "0"});
-                currentPage = 0;
-                $("#othervids-prev").css("visibility", "hidden");
-            } else {
-                currentPage += 1;
-                $("#othervids-list").animate({marginLeft: "-" + (currentPage*pageOffset) + "px"});
-                if (currentPage !== 0) {
-                    // hide button
-                    $("#othervids-prev").css("visibility", "visible");
-                    $("#othervids-prev").css("opacity", "1");
-                }
-            }
-
-        });
-
-        $(".yt-uix-shelfslider-prev").on('click', function(e) {
-            e.preventDefault();
-            if (currentPage === 0) {
-                // beginning page, this button shouldn't have even been clicked cause it should be hidden, but whatever
-            } else {
-                currentPage -= 1;
-                $("#othervids-list").animate({marginLeft: "-" + (currentPage*pageOffset) + "px"});
-                if (currentPage === 0) {
-                    // hide button
-                    $("#othervids-prev").css("visibility", "hidden");
-                }
-            }
-        });
-
 	}
 	}, 10);
 });

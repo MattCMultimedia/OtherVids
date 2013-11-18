@@ -99,7 +99,7 @@ chrome.extension.sendMessage({}, function(response) {
                 vidCount = 23;
                 totalWidth = vidCount * 175;
                 totalPages = Math.floor(vidCount/5);
-                console.log(data);
+
                 $(containerTemplate).insertBefore("#playlist");
                 $(".othervids-content").html(slider(data));
                 vidCount = data.feed.entry.length;

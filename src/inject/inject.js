@@ -77,7 +77,6 @@ chrome.extension.sendMessage({}, function(response) {
     var pageOffset = 175*5.22;
 
 
-    // http://gdata.youtube.com/feeds/api/users/UCzH3iADRIq1IJlIXjfNgTpA/uploads?orderby=published
         $.ajax({
             method: "GET",
             dataType: "JSON",
@@ -87,9 +86,6 @@ chrome.extension.sendMessage({}, function(response) {
                 results: 30
             },
             url: "http://gdata.youtube.com/feeds/api/users/" + channelID + "/uploads",
-            headers: {
-                "X-GData-Key": "key=AI39si76t2w4itJ6dwa0imgrqqrayvbggwu-iZ7CnMgSStq4Rc_Z-_jOssaDK62EngXeb8o1Vm9wNEIRaF5FJxOblUA4XpSTqg"
-            },
             success: function(data) {
                 vidCount = 23;
                 totalWidth = vidCount * 175;

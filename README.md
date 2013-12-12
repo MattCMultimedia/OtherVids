@@ -15,5 +15,4 @@ Boilerplate generated via extensionizr.com. Thanks!
     - Could find and attach to the event that YouTube calls when changing videos (+1)
 - Possibly make the "OtherVids" text not as obtrusive or something. I keep thinking it's a channel name.
 - Take screenshots for Webstore listing.
-- Design a not-terrible icon.
-- Design a landing page at http://matt.cond.in/OtherVids for information and such.
+- ~~Design a not-terrible icon.~~
